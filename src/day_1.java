@@ -13,60 +13,57 @@ public class day_1 {
       } catch ( FileNotFoundException ex) {
           throw new RuntimeException(ex);
       }
-      ArrayList<FrequencyChange> parsedInput = new ArrayList<>();
+      ArrayList<Instruction> parsedInput = new ArrayList<>();
       while (input.hasNext()) {
           String nextInput = input.next();
-          FrequencyChange nextFrequencyChange = new FrequencyChange(nextInput);
-          parsedInput.add(nextFrequencyChange);
+          Instruction instruction = new Instruction(nextInput);
+          parsedInput.add(instruction);
       }
 
-      int currentFrequency = 0;
-      for (int i = 0; i < parsedInput.size(); i++) {
-          //parsedInput.get(i).printFrequencyChange();
-          if (parsedInput.get(i).getSign() == '+'){
-              currentFrequency += parsedInput.get(i).getQuantity();
-          }
-          if (parsedInput.get(i).getSign() == '-'){
-              currentFrequency -= parsedInput.get(i).getQuantity();
-          }
-      }
-      System.out.println("Solution to part 1: " + currentFrequency);
+      FrequencyTracker part1Tracker = new FrequencyTracker();
+      for (Instruction instruction : parsedInput)
+          part1Tracker.changeByInstruction(instruction);
+      System.out.println("Solution to part 1: " + part1Tracker.getFrequency());
 
-      // reset counter for part 2
-      currentFrequency = 0;
+      FrequencyTracker part2Tracker = new FrequencyTracker();
       ArrayList<Integer> seenBefore = new ArrayList<>();
       seenBefore.add(0);
       boolean foundAnswer = false;
-      while (foundAnswer == false) {
-          for (int i = 0; i < parsedInput.size(); i++) {
-              if (parsedInput.get(i).getSign() == '+') {
-                  currentFrequency += parsedInput.get(i).getQuantity();
-              }
-              if (parsedInput.get(i).getSign() == '-') {
-                  currentFrequency -= parsedInput.get(i).getQuantity();
-              }
-              if (seenBefore.contains(currentFrequency)) {
+      while (!foundAnswer) {
+          for ( Instruction instruction : parsedInput ) {
+              part2Tracker.changeByInstruction(instruction);
+              if (seenBefore.contains(part2Tracker.getFrequency())) {
                   foundAnswer = true;
                   break;
               }
-              //System.out.println(currentFrequency);
-              seenBefore.add(currentFrequency);
+              seenBefore.add(part2Tracker.getFrequency());
           }
       }
-      System.out.println("Solution to part 2: " + currentFrequency);
+      System.out.println("Solution to part 2: " + part2Tracker.getFrequency());
     }
 }
 
-class FrequencyChange {
-    private char sign;
-    private int quantity;
-    FrequencyChange(String bothInputs) {
+class FrequencyTracker{
+    private int currentFrequency = 0;
+    FrequencyTracker(){}
+    public void changeByInstruction(Instruction instruction){
+        if (instruction.getSign() == '+') {
+            currentFrequency += instruction.getQuantity();
+        }
+        if (instruction.getSign() == '-') {
+            currentFrequency -= instruction.getQuantity();
+        }
+    }
+    public int getFrequency(){
+        return currentFrequency;
+    }
+}
+class Instruction {
+    final private char sign;
+    final private int quantity;
+    Instruction(String bothInputs) {
         this.sign = bothInputs.charAt(0);
         this.quantity = Integer.parseInt(bothInputs.substring(1));
-    }
-    FrequencyChange(char sign, int quantity) {
-        this.sign = sign;
-        this.quantity = quantity;
     }
     char getSign() {
         return this.sign;
@@ -74,13 +71,8 @@ class FrequencyChange {
     int getQuantity() {
         return this.quantity;
     }
-    void setSign(char sign) {
-        this.sign = sign;
-    }
-    void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-    void printFrequencyChange() {
+    // for use during testing:
+    void printInstruction() {
         System.out.println("Sign is " + this.sign + " and quantity is " + this.quantity);
     }
 }
