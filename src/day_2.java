@@ -10,17 +10,44 @@ public class day_2 {
         Scanner input;
         try {
             input = new Scanner(file);
-        }
-        catch ( FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
-
-        Counter p1counter = new Counter();
+        ArrayList<char[]> boxes = new ArrayList<>();
         while (input.hasNext()) {
-            p1counter.counterIncrement(input.next().toCharArray());
+            boxes.add(input.next().toCharArray());
         }
+        Counter p1counter = new Counter();
+        for ( char[] boxid : boxes ) {
+            p1counter.counterIncrement(boxid);
+        }
+
         System.out.println("Solution to part 1: " + p1counter.getChecksum());
 
+        for ( char[] i : boxes ) {
+            for ( char[] j : boxes ) {
+                if(boxMatch(i, j))
+                    System.exit(1);
+            }
+        }
+    }
+
+    public static boolean boxMatch(char[] box1, char[] box2) {
+        int not_matching = 0;
+        for (int i = 0; i < box1.length; i++) {
+            if (box1[i] != box2[i])
+                    not_matching++;
+            }
+        if (not_matching == 1) {
+            StringBuilder solution = new StringBuilder();
+            for (int i = 0; i < box1.length; i++) {
+                if (box1[i] == box2[i])
+                    solution.append(box1[i]);
+            }
+            System.out.println("Solution to part 2: " + solution);
+            return true;
+        }
+        return false;
     }
 }
 
@@ -56,4 +83,5 @@ class Counter{
     public int getChecksum(){
         return doubles * triples;
     }
+
 }
