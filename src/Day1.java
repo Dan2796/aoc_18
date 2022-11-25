@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-public class day_1 {
+public class Day1 {
     public static void main(String[] args) {
       File file = new File("input_files/day_1.txt");
       //File file = new File("input_files/example_input_day_1.txt");

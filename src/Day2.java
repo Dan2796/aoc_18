@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.File;
 
-public class day_2 {
+public class Day2 {
     public static void main(String[] args) {
         File file = new File("input_files/day_2.txt");
         //File file = new File("input_files/example_input_day_2.txt");
