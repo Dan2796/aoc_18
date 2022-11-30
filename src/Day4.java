@@ -45,8 +45,9 @@ public class Day4 {
         }
         */
         String sleepiestGuard =  nightShifts.findSleepiestGuard();
-        int sleepiestMinute = nightShifts.findSleepiestMinute(sleepiestGuard);
+        int sleepiestMinute = nightShifts.findSleepiestMinute(sleepiestGuard)[0];
         System.out.println("Solution to part 1: " + Integer.parseInt(sleepiestGuard) * sleepiestMinute);
+        System.out.println("Solution to part 2: " + nightShifts.findSleepiestGuardMinuteCombo());
     }
 }
 
@@ -85,7 +86,7 @@ class AllShifts extends ArrayList<NightShift> {
         }
         return sleepiestGuard;
     }
-    public int findSleepiestMinute(String guardId) {
+    public int[] findSleepiestMinute(String guardId) {
         int sleepiestMinute = 0;
         int numberOfTimesAsleep = 0;
         for (int i = 0; i <= 59; i++) {
@@ -98,7 +99,20 @@ class AllShifts extends ArrayList<NightShift> {
                 numberOfTimesAsleep = timesAsleep;
             }
         }
-        return sleepiestMinute;
+        return new int[] {sleepiestMinute, numberOfTimesAsleep};
+    }
+    public int findSleepiestGuardMinuteCombo() {
+        int sleepiestMinute = 0;
+        int numberOfTimesAsleep = 0;
+        String sleepiestGuardOnMinute = "0";
+        for (String guard: this.getAllGuards()) {
+            if (this.findSleepiestMinute(guard)[1] > numberOfTimesAsleep) {
+                sleepiestMinute = this.findSleepiestMinute(guard)[0];
+                numberOfTimesAsleep = this.findSleepiestMinute(guard)[1];
+                sleepiestGuardOnMinute = guard;
+            }
+        }
+        return Integer.parseInt(sleepiestGuardOnMinute) * sleepiestMinute;
     }
 }
 class NightShift {
