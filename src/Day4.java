@@ -65,7 +65,7 @@ class AllShifts extends ArrayList<NightShift> {
             if (shift.getGuard().equals(guardId)) {
                 guardShifts.add(shift);
             }
-            }
+        }
         return guardShifts;
     }
     public int getGuardSleepTotal(String guardId) {
