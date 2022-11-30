@@ -4,8 +4,8 @@ import java.util.Collections;
 
 public class Day4 {
     public static void main(String[] args) {
-        //File file = new File("input_files/day_4.txt");
-        File file = new File("input_files/example_input_day_4.txt");
+        File file = new File("input_files/day_4.txt");
+        //File file = new File("input_files/example_input_day_4.txt");
         Scanner input;
         try {
             input = new Scanner(file);
@@ -19,7 +19,8 @@ public class Day4 {
         Collections.sort(rawInput);
 
         // process strings - open new shift each time hit a "begin shift line" after adding old one to the end
-        ArrayList<NightShift> nightShifts = new ArrayList<>();
+        //ArrayList<NightShift> nightShifts = new ArrayList<>();
+        AllShifts nightShifts = new AllShifts();
         NightShift nextShift = new NightShift(rawInput.get(0));
         for (String line: rawInput.subList(1, rawInput.size())) {
             String action = line.substring(line.indexOf("]") + 2);
@@ -36,17 +37,73 @@ public class Day4 {
         }
         // add last next shift item because list is ended
         nightShifts.add(nextShift);
+        /* For checking parsing:
         for (NightShift shift: nightShifts) {
             System.out.println("Date + " + shift.getDate());
             System.out.println("Guard on duty: " + shift.getGuard());
             shift.printSleepCalendar();
         }
+        */
+        String sleepiestGuard =  nightShifts.findSleepiestGuard();
+        int sleepiestMinute = nightShifts.findSleepiestMinute(sleepiestGuard);
+        System.out.println("Solution to part 1: " + Integer.parseInt(sleepiestGuard) * sleepiestMinute);
     }
 }
 
+class AllShifts extends ArrayList<NightShift> {
+    public HashSet<String> getAllGuards() {
+        HashSet<String> allGuards = new HashSet<>();
+        for (NightShift shift : this) {
+            allGuards.add(shift.getGuard());
+        }
+        return allGuards;
+    }
+    public AllShifts getGuardShifts(String guardId) {
+        AllShifts guardShifts = new AllShifts();
+        for (NightShift shift : this) {
+            if (shift.getGuard().equals(guardId)) {
+                guardShifts.add(shift);
+            }
+            }
+        return guardShifts;
+    }
+    public int getGuardSleepTotal(String guardId) {
+        Integer guardSleepTime = 0;
+        for (NightShift shift : this.getGuardShifts(guardId)) {
+            guardSleepTime += shift.getTotalAsleep();
+        }
+        return guardSleepTime;
+    }
+    public String findSleepiestGuard() {
+        int longestSleepTotal = 0;
+        String sleepiestGuard = "0";
+        for (String guard : this.getAllGuards()) {
+            if (getGuardSleepTotal(guard) > longestSleepTotal) {
+                longestSleepTotal = getGuardSleepTotal(guard);
+                sleepiestGuard = guard;
+            }
+        }
+        return sleepiestGuard;
+    }
+    public int findSleepiestMinute(String guardId) {
+        int sleepiestMinute = 0;
+        int numberOfTimesAsleep = 0;
+        for (int i = 0; i <= 59; i++) {
+            int timesAsleep = 0;
+            for  (NightShift shift : this.getGuardShifts(guardId)) {
+                timesAsleep += shift.checkAsleepAtMinute(i);
+            }
+            if (timesAsleep > numberOfTimesAsleep) {
+                sleepiestMinute = i;
+                numberOfTimesAsleep = timesAsleep;
+            }
+        }
+        return sleepiestMinute;
+    }
+}
 class NightShift {
-    String date, guard;
-    HashMap sleepCalendar = new HashMap<Integer, Integer>();
+    private String date, guard;
+    private HashMap sleepCalendar = new HashMap<Integer, Integer>();
     // initialise with awake at all times
 
     NightShift(String beginShiftLine) {
@@ -76,8 +133,18 @@ class NightShift {
     }
     public void printSleepCalendar() {
         for (int i = 0; i <= 59; i++) {
-            System.out.print(sleepCalendar.get(i));
+            System.out.print((sleepCalendar.get(i)).getClass());
         }
         System.out.print("\n");
+    }
+    public Integer getTotalAsleep() {
+        int totalAsleep = 0;
+        for (int i = 0; i <= 59; i++) {
+            totalAsleep += (int) sleepCalendar.get(i);
+        }
+        return totalAsleep;
+    }
+    public int checkAsleepAtMinute(int minute) {
+        return (int) sleepCalendar.get(minute);
     }
 }
