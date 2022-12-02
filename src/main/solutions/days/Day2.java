@@ -1,53 +1,63 @@
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.io.File;
+package main.solutions.days;
+import java.util.*;
 
-public class Day2 {
-    public static void main(String[] args) {
-        File file = new File("input_files/day_2.txt");
-        //File file = new File("input_files/example_input_day_2.txt");
-        Scanner input;
-        try {
-            input = new Scanner(file);
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
-        }
-        ArrayList<char[]> boxes = new ArrayList<>();
+class Day2 extends Day{
+    Day2(boolean actual) {
+        super(actual);
+    }
+
+    @Override
+    int getDay() {
+        return 2;
+    }
+
+    ArrayList<char[]> boxes = new ArrayList<>();
+    @Override
+    void parseInput() {
         while (input.hasNext()) {
             boxes.add(input.next().toCharArray());
         }
+
+    }
+
+
+    @Override
+    Integer getSolutionPart1() {
         Counter p1counter = new Counter();
         for ( char[] boxid : boxes ) {
             p1counter.counterIncrement(boxid);
         }
 
-        System.out.println("Solution to part 1: " + p1counter.getChecksum());
-
-        for ( char[] i : boxes ) {
-            for ( char[] j : boxes ) {
-                if(boxMatch(i, j))
-                    System.exit(1);
-            }
-        }
+        return p1counter.getChecksum();
     }
 
-    public static boolean boxMatch(char[] box1, char[] box2) {
+    @Override
+    String getSolutionPart2() {
+        for ( char[] i : boxes ) {
+            for ( char[] j : boxes ) {
+                if(boxMatch(i, j) != "Not found")
+                    return(boxMatch(i, j));
+            }
+        }
+        return "Could not find";
+    }
+
+    static String boxMatch(char[] box1, char[] box2) {
         int not_matching = 0;
         for (int i = 0; i < box1.length; i++) {
             if (box1[i] != box2[i])
-                    not_matching++;
-            }
+                not_matching++;
+        }
         if (not_matching == 1) {
             StringBuilder solution = new StringBuilder();
             for (int i = 0; i < box1.length; i++) {
-                if (box1[i] == box2[i])
+                if (box1[i] == box2[i]) {
                     solution.append(box1[i]);
+                }
             }
-            System.out.println("Solution to part 2: " + solution);
-            return true;
+            return solution.toString();
         }
-        return false;
+        return "Not found";
     }
 }
 

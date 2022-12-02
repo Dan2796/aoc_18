@@ -1,27 +1,26 @@
+package main.solutions.days;
 import java.util.*;
-import java.io.*;
-import java.util.Collections;
 
-public class Day4 {
-    public static void main(String[] args) {
-        File file = new File("input_files/day_4.txt");
-        //File file = new File("input_files/example_input_day_4.txt");
-        Scanner input;
-        try {
-            input = new Scanner(file);
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException();
-        }
-        ArrayList<String> rawInput = new ArrayList<>();
+class Day4 extends Day{
+    Day4(boolean actual) {
+        super(actual);
+    }
+
+    @Override
+    int getDay() {
+        return 4;
+    }
+
+    ArrayList<String> rawInput = new ArrayList<>();
+    AllShifts nightShifts = new AllShifts();
+    NightShift nextShift;
+    @Override
+    void parseInput() {
         while (input.hasNext()) {
             rawInput.add(input.nextLine());
         }
         Collections.sort(rawInput);
-
-        // process strings - open new shift each time hit a "begin shift line" after adding old one to the end
-        //ArrayList<NightShift> nightShifts = new ArrayList<>();
-        AllShifts nightShifts = new AllShifts();
-        NightShift nextShift = new NightShift(rawInput.get(0));
+        nextShift = new NightShift(rawInput.get(0));
         for (String line: rawInput.subList(1, rawInput.size())) {
             String action = line.substring(line.indexOf("]") + 2);
             if (action.matches("(.*)begins shift(.*)")) {
@@ -35,19 +34,22 @@ public class Day4 {
                 nextShift.addWakeTime(line);
             }
         }
+
         // add last next shift item because list is ended
         nightShifts.add(nextShift);
-        /* For checking parsing:
-        for (NightShift shift: nightShifts) {
-            System.out.println("Date + " + shift.getDate());
-            System.out.println("Guard on duty: " + shift.getGuard());
-            shift.printSleepCalendar();
-        }
-        */
+
+    }
+
+    @Override
+    Integer getSolutionPart1() {
         String sleepiestGuard =  nightShifts.findSleepiestGuard();
         int sleepiestMinute = nightShifts.findSleepiestMinute(sleepiestGuard)[0];
-        System.out.println("Solution to part 1: " + Integer.parseInt(sleepiestGuard) * sleepiestMinute);
-        System.out.println("Solution to part 2: " + nightShifts.findSleepiestGuardMinuteCombo());
+        return Integer.parseInt(sleepiestGuard) * sleepiestMinute;
+    }
+
+    @Override
+    Integer getSolutionPart2() {
+        return nightShifts.findSleepiestGuardMinuteCombo();
     }
 }
 

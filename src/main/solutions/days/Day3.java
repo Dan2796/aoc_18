@@ -1,40 +1,43 @@
+package main.solutions.days;
 import java.util.*;
-import java.io.File;
-import java.io.FileNotFoundException;
 
-public class Day3 {
-    public static void main(String[] args) {
-        File file = new File("input_files/day_3.txt");
-        //File file = new File("input_files/example_input_day_3.txt");
-        Scanner input;
-        try {
-            input = new Scanner(file);
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
-        }
-        //ArrayList<Claim> claims = new ArrayList<>();
-        Set<ArrayList<Integer>> claimedPartsOfCloth = new HashSet<>();
-        Set<ArrayList<Integer>> usedPartsOfCloth = new HashSet<>();
+class Day3 extends Day{
+    Day3(boolean actual) {
+        super(actual);
+    }
+
+    @Override
+    int getDay() {
+        return 3;
+    }
+
+    ArrayList<String> parsedInput = new ArrayList<>();
+    @Override
+    void parseInput() {
         while (input.hasNext())
-            new Claim(input.nextLine()).coordsAdd(claimedPartsOfCloth, usedPartsOfCloth);
-        System.out.println("Solution to part 1: " + usedPartsOfCloth.size());
+            parsedInput.add(input.nextLine());
+    }
 
-        // Reset input for read through
-        try {
-            input = new Scanner(file);
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
-        }
-        String answerP2 = "not found";
-        while (input.hasNext()) {
-            answerP2 = new Claim(input.nextLine()).checkClaimed(usedPartsOfCloth);
+    HashSet<ArrayList<Integer>> claimedPartsOfCloth = new HashSet<>();
+    HashSet<ArrayList<Integer>> usedPartsOfCloth = new HashSet<>();
+    @Override
+    Integer getSolutionPart1() {
+        for (String claimLine: parsedInput)
+            new Claim(claimLine).coordsAdd(claimedPartsOfCloth, usedPartsOfCloth);
+        return usedPartsOfCloth.size();
+    }
+
+    String answerP2;
+    @Override
+    String getSolutionPart2() {
+        for (String claimLine: parsedInput) {
+            answerP2 = new Claim(claimLine).checkClaimed(usedPartsOfCloth);
             if (!answerP2.equals("not found"))
                 break;
         }
-        System.out.println("Solution to part 2: " + answerP2);
+        return answerP2;
     }
 }
-
 class Claim {
     final private String id;
     final private int topMargin, leftMargin, width, height;

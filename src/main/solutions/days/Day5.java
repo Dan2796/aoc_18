@@ -1,17 +1,37 @@
+package main.solutions.days;
 import java.util.*;
-public class Day5 {
-    public static void main(String[] args) {
-        String stringPolymer = parseInput.readInputToString(true, 5);
-        Polymer polymer = new Polymer();
+
+class Day5 extends Day{
+    Day5(boolean actual) {
+        super(actual);
+    }
+
+    @Override
+    int getDay() {
+        return 5;
+    }
+
+    Polymer polymer = new Polymer();
+    @Override
+    void parseInput() {
+        String stringPolymer = input.next();
         for (int i = 0; i < stringPolymer.length(); i++) {
             polymer.add(stringPolymer.charAt(i));
         }
 
-        System.out.println("Solution to part 1: " + polymer.count());
+    }
+
+    @Override
+    Integer getSolutionPart1() {
+        return polymer.count();
+    }
+
+    @Override
+    Integer getSolutionPart2() {
         int shortest = polymer.size();
         for (int i = 65; i <= 90; i++)
             shortest = Math.min(polymer.removeAndCount(i), shortest);
-        System.out.print("Solution to part 2: " + shortest);
+        return shortest;
     }
 }
 
