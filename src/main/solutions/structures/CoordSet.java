@@ -11,7 +11,7 @@ public class CoordSet extends HashSet<Coord> {
         }
     }
 
-    public HashMap<String, Integer> getFourCorners() {
+    public HashMap<String, Integer> getMaxMinXYValues() {
         HashMap<String, Integer> maxMins = new HashMap<>();
         int maxX = Integer.MIN_VALUE;
         int minX = Integer.MAX_VALUE;
@@ -30,8 +30,7 @@ public class CoordSet extends HashSet<Coord> {
         return maxMins;
     }
 
-    public CoordSet getOutline() {
-        HashMap<String, Integer> maxMins = this.getFourCorners();
+    public CoordSet getOutline(HashMap<String, Integer> maxMins) {
         CoordSet outline = new CoordSet();
         // top horizontal line with corners
         for (int i = maxMins.get("minX"); i <= maxMins.get("maxX"); i++) {
@@ -53,8 +52,7 @@ public class CoordSet extends HashSet<Coord> {
     }
 
     // take set of coords and fill in area within their perimeter
-    public CoordSet fillInCoords() {
-        HashMap<String, Integer> maxMins = this.getFourCorners();
+    public CoordSet fillInCoords(HashMap<String, Integer> maxMins) {
         CoordSet fullSet = new CoordSet();
         for (int i = maxMins.get("minX") + 1; i < maxMins.get("maxX"); i++) {
             for (int j = maxMins.get("minY") + 1; j < maxMins.get("maxY"); j++) {
