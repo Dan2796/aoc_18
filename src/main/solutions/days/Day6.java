@@ -21,11 +21,6 @@ class Day6 extends Day{
         }
         outline = safeOrDanger.getOutline();
         innerSpace = safeOrDanger.fillInCoords();
-        Coord test1 = new Coord("1, 3");
-        Coord test2 = new Coord("1, 3");
-        System.out.println(test1.equals(test2));
-        System.out.println(test1.hashCode());
-        System.out.println(test2.hashCode());
     }
 
     CoordMap innerSpaceWithClosest = new CoordMap();
@@ -33,26 +28,26 @@ class Day6 extends Day{
     HashMap<Coord, Integer> areaSizes = new HashMap<>();
     @Override
     Integer getSolutionPart1() {
-        //System.out.println(outline.size());
         for (Coord coord: outline) {
-            //System.out.println("In the outline" + coord.toString());
-            infiniteCoords.add(coord.findClosestManhattan(safeOrDanger));
+            Coord theClosest = coord.findClosestManhattan(safeOrDanger);
+            infiniteCoords.add(theClosest);
         }
         for (Coord coord: innerSpace) {
-            innerSpaceWithClosest.put(coord, coord.findClosestManhattan(safeOrDanger));
+            Coord theClosest = coord.findClosestManhattan(safeOrDanger);
+            innerSpaceWithClosest.put(coord, theClosest);
+            if (theClosest != null) {
+                System.out.println(coord.toString() + " is closest to " + theClosest.toString());
+            } else {
+                System.out.println(coord.toString() + " is null.");
+            }
         }
 
-        for (Coord coord: outline) {
-            //System.out.println(coord.toString());
-        }
         for (Coord key: innerSpaceWithClosest.values()) {
             areaSizes.put(key, areaSizes.get(key) == null ? 0 : areaSizes.get(key) + 1);
         }
         int maxArea = 0;
         for (Coord key: areaSizes.keySet()) {
             if (key != null)
-              //System.out.println(key.toString() + areaSizes.get(key));
-            //System.out.println(areaSizes.get(key));
             if (!infiniteCoords.contains(key)) {
                 maxArea = Math.max(maxArea, areaSizes.get(key));
             }

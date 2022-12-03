@@ -30,24 +30,26 @@ public class CoordSet extends HashSet<Coord> {
         return maxMins;
     }
 
-    // Note that the set isn't removing duplicates because of equals() issue, so have to avoid them in the code below
-    // by shortening the horizontal lines
     public CoordSet getOutline() {
         HashMap<String, Integer> maxMins = this.getFourCorners();
-        CoordSet fullSet = new CoordSet();
-        for (int i = maxMins.get("minX") + 1; i < maxMins.get("maxX"); i++) {
-            fullSet.add(new Coord(i, maxMins.get("minY")));
+        CoordSet outline = new CoordSet();
+        // top horizontal line with corners
+        for (int i = maxMins.get("minX"); i <= maxMins.get("maxX"); i++) {
+            outline.add(new Coord(i, maxMins.get("minY")));
         }
-        for (int i = maxMins.get("minX") + 1; i < maxMins.get("maxX"); i++) {
-            fullSet.add(new Coord(i, maxMins.get("maxY")));
+        // bottom horizontal line with corners
+        for (int i = maxMins.get("minX"); i <= maxMins.get("maxX"); i++) {
+            outline.add(new Coord(i, maxMins.get("maxY")));
         }
-        for (int i = maxMins.get("minY"); i <= maxMins.get("maxY"); i++) {
-            fullSet.add(new Coord(i, maxMins.get("minX")));
+        // left vertical line without corners
+        for (int i = maxMins.get("minY") + 1; i < maxMins.get("maxY"); i++) {
+            outline.add(new Coord(maxMins.get("minX"), i));
         }
-        for (int i = maxMins.get("minY"); i <= maxMins.get("maxY"); i++) {
-            fullSet.add(new Coord(i, maxMins.get("maxX")));
+        // right vertical line with corners
+        for (int i = maxMins.get("minY") + 1; i < maxMins.get("maxY"); i++) {
+            outline.add(new Coord(maxMins.get("maxX"), i));
         }
-        return fullSet;
+        return outline;
     }
 
     // take set of coords and fill in area within their perimeter
